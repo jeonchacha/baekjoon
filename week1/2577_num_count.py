@@ -1,3 +1,5 @@
+from collections import Counter 
+
 a = int(input())
 b = int(input())
 c = int(input())
@@ -11,3 +13,6 @@ for i in range(10):
         if i == j:
             count += 1
     print(count)
+
+result = Counter(str(calc))
+print(result)
