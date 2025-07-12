@@ -27,6 +27,7 @@ def eratosthenes(max: int = 10000) -> list:
         # 리스트의 내용이 True인 2의 배수 False
         if prime_list[i]:
             # 2*2 부터 2step 씩
+            # 이미 지워진 경우도 탐색하기 때문에 시간 복잡도는 O(n log log n)
             for j in range(i*i, max + 1, i):
                 prime_list[j] = False
 
@@ -50,7 +51,7 @@ for i in num_list:
     min_b = 0
     while(a <= mid_val):
         # if is_prime(a) and is_prime(b):
-        if prime_list[a] and prime_list[b]:
+        if prime_list[a] and prime_list[b]: # 소수 판별 리스트로 소수 여부를 O(1)으로 확인
             # 골드바흐 파티션이 여러 가지의 경우 두 소수의 차이가 가장 작은 것을 출력
             if min > b - a:
                 min = b - a
