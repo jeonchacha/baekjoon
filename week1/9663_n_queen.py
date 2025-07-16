@@ -1,4 +1,3 @@
-import sys
 # n queen
 # 같은 행, 열, 대각선에는 다른 퀸을 놓을 수 없음
 # 같은 행에는 퀸을 놓지 않는다
@@ -24,25 +23,51 @@ import sys
 #                checknode(u) 
 # }
 
-def n_queens(i, col):
-    n = len(col) - 1
-    if(promising(i, col)):
-        if i == n:
-            print(col[1: n+1])
-        else:
-            for j in range(1, n+1):
-                col[i + 1] = j
-                n_queens(i + 1, col)    
+import sys
 
-def promising(i, col):
-    k = 1
-    flag = True
-    while(k < i and flag):
-        if col[i] == col[k] or abs(col[i] - col[k]) == i - k:
-            flag = False
-        k += 1    
-    return flag
+# def n_queens(i, col):
+#     global count
+#     n = len(col) - 1
+#     if(promising(i, col)):
+#         if i == n:
+#             count += 1
+#         else:
+#             for j in range(1, n+1):
+#                 col[i + 1] = j
+#                 n_queens(i + 1, col)    
 
-n = 4
-col = [0] * (n + 1)
-n_queens(0, col)
+# def promising(i, col):
+#     k = 1
+#     flag = True
+#     while(k < i and flag):
+#         if col[i] == col[k] or abs(col[i] - col[k]) == i - k:
+#             flag = False
+#         k += 1    
+#     return flag
+
+def n_queens(row):
+    global count
+    if row == N:
+        count +=1
+        return
+    
+    for col in range(N):
+        if not col_used[col] and not diag1_used[row + col] and not diag2_used[row - col + N - 1]:
+            col_used[col] = diag1_used[row + col] = diag2_used[row - col + N - 1] = True
+            n_queens(row + 1)
+            col_used[col] = diag1_used[row + col] = diag2_used[row - col + N - 1] = False 
+
+N = int(sys.stdin.readline())
+# col = [0] * (N + 1)
+# n_queens(0, col)
+count = 0
+col_used = [False] * N
+# 대각선 사용 여부 체크 배열 ( '/' 방향: row + col, '\' 방향: row - col + N - 1)
+# '/' 방향은 (0, 3), (1, 2), (2, 1), (3, 0) 같이 이동 -> 이들 좌표의 공통점은 row + col 이 일정
+# '\' 방향은 (0, 0), (1, 1), (2, 2), (3, 3) 같이 이동 -> 이들 좌표의 공통점은 row - col 이 일정
+# -> row - col은 -(N-1)부터 +(N-1)까지의 값을 가짐 -> 음수 존재 -> 배열 인덱스는 음수 불가 -> 전체를 + N -1 만큼 shift
+diag1_used = [False] * (2 * N - 1)
+print(diag1_used)
+diag2_used = [False] * (2 * N - 1)
+n_queens(0)
+print(count)
