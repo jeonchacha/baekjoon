@@ -7,6 +7,7 @@ n = len(num_list)
 max_sum = 0
 for i in itertools.permutations(num_list, n):
     temp_sum = 0
+    print(i)
     for j in range(n-1):
         # abs(): 절대값
         temp_sum += abs(i[j] - i[j+1])

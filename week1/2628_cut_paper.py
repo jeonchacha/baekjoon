@@ -5,9 +5,7 @@ cut_count = int(sys.stdin.readline().strip())
 cut_info = []
 for i in range(cut_count):
     cut_info.append(sys.stdin.readline().strip().split())
-
 cut_info_int = [list(map(int, pair)) for pair in cut_info]
-
 wid_list = [0, height]
 hei_list = [0, width]
 for i in range(len(cut_info_int)):
