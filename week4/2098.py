@@ -1,6 +1,4 @@
 # 2098 외판원 순회
-import sys
-input = sys.stdin.readline
 
 # 상태정의
 # dp[current][visited]
@@ -11,9 +9,9 @@ input = sys.stdin.readline
 # 남은 도시를 방문하고 시작점으로 돌아가는 최소 비용
 
 # 점화식
-# dp[current][visited] = min(
-#     dp[current][visited],
-#     tsp[next][visited | (1 << next)] + w[current][next]
+# dp[next][visited | (1 << next)] = min(
+#     dp[next][visited | (1 << next)],
+#     dp[current][visited] + W[current][next]
 # )
 # 단, 다음 조건을 만족해야 함:
 # w[current][next] > 0 → 길이 존재해야 하고
@@ -29,35 +27,40 @@ input = sys.stdin.readline
 # W[current][0]를 더해서 반환해야 함.
 # (즉, 이 상태에서 dp[current][visited] + W[current][0])
 
-N = int(input())  # 도시 수
-W = [list(map(int, input().split())) for _ in range(N)]  # W[i][j] = i번 도시에서 j번 도시로 가는 비용
+import sys
+input = sys.stdin.readline
 
-INF = float('inf')  # 길 없을 때 쓰기 위함
+N = int(input())
+W = [list(map(int, input().split())) for _ in range(N)]
 
-dp = [[INF] * (1 << N) for _ in range(N)]
+INF = float('inf')
+dp = [[INF] * (1 << N) for _ in range(N)]  # dp[current][visited]
+dp[0][1 << 0] = 0  # 시작점은 0번 도시, 0번만 방문한 상태
 
-def tsp(current, visited):
-    # 종료 조건: 모든 도시를 방문했을 경우
-    if visited == (1 << N) - 1:  # visited가 111...1이면 (모든 도시 방문)
-        return W[current][0] if W[current][0] > 0 else INF  # 시작점(0)으로 돌아갈 수 있으면 비용, 없으면 INF
+for visited in range(1 << N):        # 방문한 도시 집합 순회
+    for current in range(N):         # 현재 위치한 도시
+        if dp[current][visited] == INF:
+            continue  # 아직 도달하지 못한 상태라면 skip
 
-    # 이미 계산된 상태면 그 값을 그대로 리턴
-    if dp[current][visited] != INF:
-        return dp[current][visited]
+        for next in range(N):        # 다음에 갈 도시
+            if visited & (1 << next):    # 이미 방문한 도시면 skip
+                continue
+            if W[current][next] == 0:    # 길이 없으면 skip
+                continue
 
-    # 다음 도시 탐색
-    for next in range(N):
-        # 이미 방문한 도시면 건너뜀
-        if visited & (1 << next):
-            continue
-        # 현재 도시에서 다음 도시로 가는 길이 없으면 건너뜀
-        if W[current][next] == 0:
-            continue
+            next_visited = visited | (1 << next)
+            dp[next][next_visited] = min(
+                dp[next][next_visited],
+                dp[current][visited] + W[current][next]
+            )
 
-        cost = tsp(next, visited | (1 << next)) + W[current][next]
-        dp[current][visited] = min(dp[current][visited], cost)
+# 모든 도시를 방문한 상태에서 0번으로 돌아가는 최소 비용 계산
+ans = INF
+final_state = (1 << N) - 1  # visited == 111...1 → 모든 도시 방문한 상태
 
-    return dp[current][visited]
+for last in range(N):
+    if W[last][0] == 0:  # 마지막 도시에서 시작점으로 돌아갈 수 없으면 skip
+        continue
+    ans = min(ans, dp[last][final_state] + W[last][0])
 
-# 시작점은 0번 도시, 0번 도시만 방문한 상태
-print(tsp(0, 1 << 0))
+print(ans)
