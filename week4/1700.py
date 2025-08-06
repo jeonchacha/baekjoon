@@ -1,10 +1,10 @@
 # 1700 멀티탭 스케줄링
 import sys
 input = sys.stdin.readline
-N, K = map(int, input().split())
-usage_order = input().split()
-# N, K = 2, 7
-# usage_order = ['2', '3', '2', '3', '1', '2', '7']
+# N, K = map(int, input().split())
+# usage_order = input().split()
+N, K = 2, 7
+usage_order = ['2', '3', '2', '3', '1', '2', '7']
 def min_unplugs(num_slots, usage_order):
     plugs = []
     unplug_count = 0
